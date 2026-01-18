@@ -1,0 +1,39 @@
+name: .NET Core CI & Docker Build
+
+# Robot ne zaman uyansın?
+# "main" dalına kod geldiğinde (push) çalışır.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Robot, Linux bir makinede çalışsın
+
+    steps:
+    # 1. GitHub'daki kodunu o makineye indir
+    - uses: actions/checkout@v4
+
+    # 2. Makineye .NET 8 yükle
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    # 3. Bağımlılıkları yükle (Restore)
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # 4. Projeyi Derle (Build)
+    - name: Build
+      run: dotnet build --no-restore
+
+    # 5. Testleri Çalıştır (Eğer test projen varsa çalışır, yoksa hata vermez geçer)
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    # 6. Docker İmajını Oluştur (Senin yaptığın o build işlemi)
+    - name: Build Docker Image
+      run: docker build . --file Dockerfile --tag my-app:${{ github.sha }}
