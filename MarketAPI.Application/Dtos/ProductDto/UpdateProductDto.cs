@@ -1,0 +1,9 @@
+﻿namespace MarketAPI.Application.Dtos.ProductDto;
+
+public class UpdateProductDto
+{
+    
+    public string Name { get; set; }
+    public int Stock { get; set; }
+    public decimal Price { get; set; }
+}

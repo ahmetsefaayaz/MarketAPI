@@ -1,0 +1,6 @@
+@MarketAPI.Presentation_HostAddress = http://localhost:5216
+
+GET {{MarketAPI.Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
