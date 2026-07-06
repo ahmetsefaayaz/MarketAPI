@@ -1,4 +1,5 @@
 ﻿using MarketAPI.Application.Dtos.ProductDto;
+using MarketAPI.Application.Exceptions;
 using MarketAPI.Application.Interfaces.IProduct;
 using MarketAPI.Application.Interfaces.IUnitOfWork;
 using MarketAPI.Domain.Entities;
@@ -16,7 +17,7 @@ public class ProductService: IProductService
     public async Task<Product> GetProductAsync(Guid id)
     {
         var product = await _unitOfWork.ProductRepository.GetProductAsync(id);
-        if(product == null) throw new Exception("Product not found");
+        if(product == null) throw new NotFoundException("Product not found");
         return product;
     }
 
@@ -35,23 +36,26 @@ public class ProductService: IProductService
             Stock =  dto.Stock
         };
         await _unitOfWork.ProductRepository.AddProductAsync(product);
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task UpdateProductAsync(Guid id, UpdateProductDto dto)
     {
         var product = await _unitOfWork.ProductRepository.GetProductAsync(id);
-        if(product == null) throw new Exception("Product not found");
+        if(product == null) throw new NotFoundException("Product not found");
         
         product.Name = dto.Name;
         product.Price = dto.Price;
         product.Stock = dto.Stock;
         await _unitOfWork.ProductRepository.UpdateProductAsync(product);
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task DeleteProductAsync(Guid id)
     {
         var product = await _unitOfWork.ProductRepository.GetProductAsync(id);
-        if(product == null) throw new Exception("Product not found");
+        if(product == null) throw new NotFoundException("Product not found");
         await _unitOfWork.ProductRepository.DeleteProductAsync(id);
+        await _unitOfWork.CompleteAsync();
     }
 }

@@ -1,4 +1,5 @@
 using MarketAPI.Application.Dtos.ProductDto;
+using MarketAPI.Application.Exceptions;
 using MarketAPI.Application.Interfaces.IProduct;
 using MarketAPI.Application.Interfaces.IUnitOfWork;
 using MarketAPI.Application.Services;
@@ -36,7 +37,7 @@ public class ProductServiceTest
     {
         var productId = Guid.NewGuid();
         _mockUnitOfWork.Setup(x => x.ProductRepository.GetProductAsync(productId)).ReturnsAsync((Product)null);
-        Assert.ThrowsAsync<Exception>(async () => await _productService.GetProductAsync(productId));
+        Assert.ThrowsAsync<NotFoundException>(async () => await _productService.GetProductAsync(productId));
     }
 
     [Fact]
@@ -50,7 +51,7 @@ public class ProductServiceTest
             p.Price == dto.Price &&
             p.Stock == dto.Stock
             )), Times.Once);
-        _mockUnitOfWork.Verify(x => x.CompleteAsync(), Times.Never);
+        _mockUnitOfWork.Verify(x => x.CompleteAsync(), Times.Once);
     }
 
     [Fact]
@@ -83,7 +84,7 @@ public class ProductServiceTest
             p.Price == dto.Price
             )),  Times.Once);
         //Test - 2
-        _mockUnitOfWork.Verify(x => x.CompleteAsync(), Times.Never);
+        _mockUnitOfWork.Verify(x => x.CompleteAsync(), Times.Once);
         
     }
     

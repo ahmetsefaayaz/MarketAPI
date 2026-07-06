@@ -1,4 +1,5 @@
 ﻿using MarketAPI.Application.Dtos.OrderDto;
+using MarketAPI.Application.Exceptions;
 using MarketAPI.Application.Interfaces.IOrder;
 using MarketAPI.Application.Interfaces.IUnitOfWork;
 using MarketAPI.Application.Services.Notifications;
@@ -14,8 +15,6 @@ public class OrderService: IOrderService
     {
         _unitOfWork = unitOfWork;
     }
-    
-    
     public async Task<Order> GetOrderAsync(Guid orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetOrderAsync(orderId);
@@ -62,7 +61,7 @@ public class OrderService: IOrderService
     public async Task UpdateOrderAsync(Guid orderId, UpdateOrderDto dto)
     {
         var order = await _unitOfWork.OrderRepository.GetOrderAsync(orderId);
-        if (order == null) throw new Exception("Order not found");
+        if (order == null) throw new Exception("Siparis bulunamadi");
 
         if (order.ProductId != dto.ProductId)
         {
@@ -74,7 +73,7 @@ public class OrderService: IOrderService
             }
 
             var newProduct = await _unitOfWork.ProductRepository.GetProductAsync(dto.ProductId);
-            if (newProduct == null) throw new Exception("New product not found");
+            if (newProduct == null) throw new NotFoundException("New product not found");
             if (newProduct.Stock < dto.Quantity) throw new Exception("Not enough stock for new product");
 
             newProduct.Stock -= dto.Quantity;
@@ -103,9 +102,9 @@ public class OrderService: IOrderService
     public async Task DeleteOrderAsync(Guid orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetOrderAsync(orderId);
-        if(order == null) throw new Exception("Order not found");
+        if(order == null) throw new NotFoundException("Order not found");
         var product = await _unitOfWork.ProductRepository.GetProductAsync(order.ProductId);
-        if(product == null) throw new Exception("Product not found");
+        if(product == null) throw new NotFoundException("Product not found");
         
         product.Stock += order.Quantity;
         await _unitOfWork.ProductRepository.UpdateProductAsync(product);

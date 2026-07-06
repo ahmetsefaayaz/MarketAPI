@@ -1,4 +1,5 @@
 ﻿using MarketAPI.Application.Dtos.ProductDto;
+using MarketAPI.Application.Exceptions;
 using MarketAPI.Application.Interfaces.IProduct;
 using Microsoft.AspNetCore.Mvc;
 
