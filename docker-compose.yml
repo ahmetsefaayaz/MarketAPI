@@ -20,8 +20,7 @@
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
         - POSTGRES_DB=MarketDB
-      ports:
-        - "5450:5432"
+      
       volumes:
         - postgres_data:/var/lib/postgresql/data
 
