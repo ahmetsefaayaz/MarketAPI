@@ -50,7 +50,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<MarketAPIDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<MarketAPIDbContext>();
         
         context.Database.Migrate(); 
         Console.WriteLine("--> Veritabanı migrationları başarıyla uygulandı.");
