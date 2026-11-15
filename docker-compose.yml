@@ -7,7 +7,7 @@
         context: .
         dockerfile: Dockerfile
       ports:
-        - "5050:8080"
+        - "80:8080"
       environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ConnectionStrings__DefaultConnection=Server=market-db;Port=5432;Database=MarketDB;User Id=postgres;Password=postgres;
